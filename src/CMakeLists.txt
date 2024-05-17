@@ -31,9 +31,7 @@ target_include_directories(${OATPP_THIS_MODULE_NAME}
 )
 
 target_link_libraries(${OATPP_THIS_MODULE_NAME}
-        PRIVATE mbedtls::TLS
-        PRIVATE mbedtls::X509
-        PRIVATE mbedtls::Crypto
+        PRIVATE MbedTLS::mbedtls
 )
 
 if(${OATPP_MBEDTLS_DEBUG} GREATER 0)

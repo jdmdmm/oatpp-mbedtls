@@ -97,10 +97,10 @@ message("## ${OATPP_THIS_MODULE_NAME} module. Resolving dependencies...\n")
 ##############################
 ## Find MbedTLS dependency
 
-include(FindPkgConfig)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/module")
+#include(FindPkgConfig)
+#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/module")
 
-find_package(mbedtls 2.16.0 REQUIRED)
+find_package(mbedtls REQUIRED)
 
 message("MBEDTLS_INCLUDE_DIR=${MBEDTLS_INCLUDE_DIR}")
 message("MBEDTLS_TLS_LIBRARY=${MBEDTLS_TLS_LIBRARY}")

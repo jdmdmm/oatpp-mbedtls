@@ -27,6 +27,11 @@
 
 #include "oatpp/core/base/Environment.hpp"
 
+#include "mbedtls/entropy.h"
+#include "mbedtls/x509.h"
+#include "mbedtls/net_sockets.h"
+#include "mbedtls/error.h"
+
 #if defined(OATPP_MBEDTLS_DEBUG)
 #include <mbedtls/debug.h>
 namespace oatpp { namespace mbedtls {
@@ -92,7 +97,7 @@ std::shared_ptr<Config> Config::createDefaultServerConfigShared(const char* serv
     throw std::runtime_error("[oatpp::mbedtls::Config::createDefaultServerConfigShared()]: Error. Can't parse serverCertFile");
   }
 
-  res = mbedtls_pk_parse_keyfile(&result->m_privateKey, privateKeyFile, pkPassword);
+  res = mbedtls_pk_parse_keyfile(&result->m_privateKey, privateKeyFile, pkPassword, nullptr, nullptr);
   if(res != 0) {
     OATPP_LOGD("[oatpp::mbedtls::Config::createDefaultServerConfigShared()]", "Error. Can't parse privateKeyFile path='%s', return value=%d", privateKeyFile, res);
     throw std::runtime_error("[oatpp::mbedtls::Config::createDefaultServerConfigShared()]: Error. Can't parse privateKeyFile");
@@ -195,7 +200,8 @@ std::shared_ptr<Config> Config::createDefaultClientConfigShared(bool throwOnVeri
 
   if (privateKey.size())
   {
-	res = mbedtls_pk_parse_key(&result->m_privateKey, (const unsigned char *)privateKey.data(), privateKey.size()+1, NULL, 0);
+	res = mbedtls_pk_parse_key(&result->m_privateKey, (const unsigned char *)privateKey.data(), privateKey.size()+1,
+                             nullptr, 0, nullptr, nullptr);
 	if (res != 0) {
 		OATPP_LOGD("[oatpp::mbedtls::Config::createDefaultClientConfigShared()]", "Error. Call to mbedtls_pk_parse_key() failed, return value=%d.", res);
 		throw std::runtime_error("[oatpp::mbedtls::Config::createDefaultClientConfigShared()]: Error. Call to mbedtls_pk_parse_key() failed.");
