@@ -24,10 +24,10 @@
  ***************************************************************************/
 
 #include "./ConnectionProvider.hpp"
+#include "oatpp-mbedtls/Connection.hpp"
 
 #include "oatpp/network/tcp/client/ConnectionProvider.hpp"
-
-#include "oatpp-mbedtls/Connection.hpp"
+#include "oatpp/base/Log.hpp"
 
 namespace oatpp { namespace mbedtls { namespace client {
 
@@ -90,7 +90,7 @@ provider::ResourceHandle<data::stream::IOStream> ConnectionProvider::get(){
   if(res != 0) {
     mbedtls_ssl_free(tlsHandle);
     delete tlsHandle;
-    OATPP_LOGD("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]", "Error. Call to mbedtls_ssl_setup() failed. Return value=%d", res);
+    OATPP_LOGd("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]", "Error. Call to mbedtls_ssl_setup() failed. Return value={}", res);
     throw std::runtime_error("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]: Error. Call to mbedtls_ssl_setup() failed.");
   }
 
@@ -98,7 +98,7 @@ provider::ResourceHandle<data::stream::IOStream> ConnectionProvider::get(){
   if(res != 0) {
     mbedtls_ssl_free(tlsHandle);
     delete tlsHandle;
-    OATPP_LOGD("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]", "Error. Call to mbedtls_ssl_set_hostname() failed. Return value=%d", res);
+    OATPP_LOGd("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]", "Error. Call to mbedtls_ssl_set_hostname() failed. Return value={}", res);
     throw std::runtime_error("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]: Error. Call to mbedtls_ssl_set_hostname() failed.");
   }
 
@@ -109,8 +109,8 @@ provider::ResourceHandle<data::stream::IOStream> ConnectionProvider::get(){
     if ((flags = mbedtls_ssl_get_verify_result(tlsHandle)) != 0) {
       char vrfy_buf[512];
       mbedtls_x509_crt_verify_info(vrfy_buf, sizeof(vrfy_buf), "", flags);
-      OATPP_LOGE("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]",
-                 "Server certificate verification failed: %s",
+      OATPP_LOGe("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]",
+                 "Server certificate verification failed: {}",
                  vrfy_buf);
       mbedtls_ssl_free(tlsHandle);
       throw std::runtime_error("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]: Error. Server certificate verification failed.");
@@ -167,13 +167,13 @@ oatpp::async::CoroutineStarterForResult<const provider::ResourceHandle<data::str
 
       auto res = mbedtls_ssl_setup(m_tlsHandle, m_config->getTLSConfig());
       if(res != 0) {
-        OATPP_LOGD("[oatpp::mbedtls::client::ConnectionProvider::getConnectionAsync()]", "Error. Call to mbedtls_ssl_setup() failed. Return value=%d", res);
+        OATPP_LOGd("[oatpp::mbedtls::client::ConnectionProvider::getConnectionAsync()]", "Error. Call to mbedtls_ssl_setup() failed. Return value={}", res);
         return error<Error>("[oatpp::mbedtls::client::ConnectionProvider::getConnectionAsync()]: Error. Call to mbedtls_ssl_setup() failed.");
       }
 
       res = mbedtls_ssl_set_hostname(m_tlsHandle, (const char*) m_streamProvider->getProperty(PROPERTY_HOST).getData());
       if(res != 0) {
-        OATPP_LOGD("[oatpp::mbedtls::client::ConnectionProvider::getConnectionAsync()]", "Error. Call to mbedtls_ssl_set_hostname() failed. Return value=%d", res);
+        OATPP_LOGd("[oatpp::mbedtls::client::ConnectionProvider::getConnectionAsync()]", "Error. Call to mbedtls_ssl_set_hostname() failed. Return value={}", res);
         return error<Error>("[oatpp::mbedtls::client::ConnectionProvider::getConnectionAsync()]: Error. Call to mbedtls_ssl_set_hostname() failed.");
       }
 
@@ -193,7 +193,7 @@ oatpp::async::CoroutineStarterForResult<const provider::ResourceHandle<data::str
       {
         char vrfy_buf[512];
         mbedtls_x509_crt_verify_info( vrfy_buf, sizeof( vrfy_buf ), "", flags );
-        OATPP_LOGW("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]", "Server certificate verification failed: %s", vrfy_buf);
+        OATPP_LOGw("[oatpp::mbedtls::client::ConnectionProvider::getConnection()]", "Server certificate verification failed: {}", vrfy_buf);
       }
 
       return yieldTo(&ConnectCoroutine::onSuccess);

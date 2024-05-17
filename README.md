@@ -104,7 +104,7 @@ auto connection = connectionProvider->getConnection();
 **Note:** To use `oatpp-mbedtls` for server connections with custom transport stream you should implement:
 
 - [oatpp::network::ServerConnectionProvider](https://oatpp.io/api/latest/oatpp/network/ConnectionProvider/#serverconnectionprovider).
-- [oatpp::data::stream::IOStream](https://oatpp.io/api/latest/oatpp/core/data/stream/Stream/#iostream) - to be returned by `ConnectionProvider`.
+- [oatpp::data::stream::IOStream](https://oatpp.io/api/latest/oatpp/data/stream/Stream/#iostream) - to be returned by `ConnectionProvider`.
 
 ### Client
 
@@ -145,7 +145,7 @@ auto connection = connectionProvider->getConnection();
 **Note:** To use `oatpp-mbedtls` for client connections with custom transport stream you should implement:
 
 - [oatpp::network::ClientConnectionProvider](https://oatpp.io/api/latest/oatpp/network/ConnectionProvider/#clientconnectionprovider).
-- [oatpp::data::stream::IOStream](https://oatpp.io/api/latest/oatpp/core/data/stream/Stream/#iostream) - to be returned by `ConnectionProvider`.
+- [oatpp::data::stream::IOStream](https://oatpp.io/api/latest/oatpp/data/stream/Stream/#iostream) - to be returned by `ConnectionProvider`.
 
 
 ## See more

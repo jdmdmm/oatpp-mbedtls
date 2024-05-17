@@ -25,8 +25,8 @@
 #ifndef oatpp_mbedtls_Connection_hpp
 #define oatpp_mbedtls_Connection_hpp
 
-#include "oatpp/core/provider/Provider.hpp"
-#include "oatpp/core/data/stream/Stream.hpp"
+#include "oatpp/provider/Provider.hpp"
+#include "oatpp/data/stream/Stream.hpp"
 
 #include "mbedtls/ssl.h"
 #include "mbedtls/net_sockets.h"

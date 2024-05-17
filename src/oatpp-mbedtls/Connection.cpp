@@ -23,6 +23,7 @@
  ***************************************************************************/
 
 #include "Connection.hpp"
+#include "oatpp/base/Log.hpp"
 
 #include "mbedtls/error.h"
 
@@ -70,7 +71,7 @@ void Connection::ConnectionContext::init() {
       res = mbedtls_ssl_handshake(m_connection->m_tlsHandle);
 
       if(!ioGuard.unpackAndCheck()) {
-        OATPP_LOGE("[oatpp::mbedtls::Connection::ConnectionContext::init()]", "Error. Packed action check failed!!!");
+        OATPP_LOGe("[oatpp::mbedtls::Connection::ConnectionContext::init()]", "Error. Packed action check failed!!!");
         return;
       }
 
@@ -148,7 +149,7 @@ async::CoroutineStarter Connection::ConnectionContext::initAsync() {
       auto res = mbedtls_ssl_handshake(m_connection->m_tlsHandle);
 
       if(!ioGuard.unpackAndCheck()) {
-        OATPP_LOGE("[oatpp::mbedtls::Connection::ConnectionContext::initAsync()]", "Error. Packed action check failed!!!");
+        OATPP_LOGe("[oatpp::mbedtls::Connection::ConnectionContext::initAsync()]", "Error. Packed action check failed!!!");
         return error<Error>("[oatpp::mbedtls::Connection::ConnectionContext::initAsync()]: Error. Packed action check failed!!!");
       }
 
@@ -339,7 +340,7 @@ v_io_size Connection::write(const void *buff, v_buff_size count, async::Action& 
   auto result = mbedtls_ssl_write(m_tlsHandle, (const unsigned char *) buff, (size_t)count);
 
   if(!ioGuard.unpackAndCheck()) {
-    OATPP_LOGE("[oatpp::mbedtls::Connection::write(...)]", "Error. Packed action check failed!!!");
+    OATPP_LOGe("[oatpp::mbedtls::Connection::write(...)]", "Error. Packed action check failed!!!");
     return oatpp::IOError::BROKEN_PIPE;
   }
 
@@ -365,7 +366,7 @@ v_io_size Connection::read(void *buff, v_buff_size count, async::Action& action)
   auto result = mbedtls_ssl_read(m_tlsHandle, (unsigned char *) buff, (size_t)count);
 
   if(!ioGuard.unpackAndCheck()) {
-    OATPP_LOGE("[oatpp::mbedtls::Connection::read(...)]", "Error. Packed action check failed!!!");
+    OATPP_LOGe("[oatpp::mbedtls::Connection::read(...)]", "Error. Packed action check failed!!!");
     return oatpp::IOError::BROKEN_PIPE;
   }
 
