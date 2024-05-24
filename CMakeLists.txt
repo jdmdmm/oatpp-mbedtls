@@ -23,6 +23,13 @@ option(OATPP_DIR_LIB "Path to directory with liboatpp (directory containing ex: 
 option(OATPP_BUILD_TESTS "Build tests for this module" ON)
 option(OATPP_LINK_TEST_LIBRARY "Link oat++ test library" ON)
 option(OATPP_INSTALL "Install module binaries" ON)
+option(USE_FETCH_CONTENT "Use FetchContent for dependencies" ON)
+if(USE_FETCH_CONTENT)
+    set(MBEDTLS_TARGET mbedtls CACHE STRING "The mbedtls target from FetchContent")
+    set(MBEDX509_TARGET mbedx509 CACHE STRING "The mbedx509 (ssl) target from FetchContent")
+    set(MBEDCRYPTO_TARGET mbedcrypto CACHE STRING "The mbedcrypto target from FetchContent")
+    set(MBEDTLS_INCLUDE_DIR "" CACHE STRING "The mbedtls include directory from FetchContent")
+endif()
 
 set(OATPP_MODULES_LOCATION "INSTALLED" CACHE STRING "Location where to find oatpp modules. can be [INSTALLED|EXTERNAL|CUSTOM]")
 set(OATPP_MBEDTLS_DEBUG "0" CACHE STRING "The debug-level of mbedtls")
@@ -94,26 +101,35 @@ endif()
 message("\n############################################################################")
 message("## ${OATPP_THIS_MODULE_NAME} module. Resolving dependencies...\n")
 
-##############################
-## Find MbedTLS dependency
+if(USE_FETCH_CONTENT)
+    add_library(mbedtls::TLS ALIAS ${MBEDTLS_TARGET})
+    add_library(mbedtls::X509 ALIAS ${MBEDX509_TARGET})
+    add_library(mbedtls::Crypto ALIAS ${MBEDCRYPTO_TARGET})
 
-include(FindPkgConfig)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/module")
+    message("MBEDTLS_INCLUDE_DIR=${MBEDTLS_INCLUDE_DIR}")
+else()
+    ##############################
+    ## Find MbedTLS dependency
 
-find_package(mbedtls 2.16.0 REQUIRED)
+    include(FindPkgConfig)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/module")
 
-message("MBEDTLS_INCLUDE_DIR=${MBEDTLS_INCLUDE_DIR}")
-message("MBEDTLS_TLS_LIBRARY=${MBEDTLS_TLS_LIBRARY}")
-message("MBEDTLS_SSL_LIBRARY=${MBEDTLS_SSL_LIBRARY}")
-message("MBEDTLS_X509_LIBRARY=${MBEDTLS_X509_LIBRARY}")
-message("MBEDTLS_CRYPTO_LIBRARY=${MBEDTLS_CRYPTO_LIBRARY}")
-message("MBEDTLS_LIBRARIES=${MBEDTLS_LIBRARIES}")
-message("MBEDTLS_VERSION=${MBEDTLS_VERSION}")
+    find_package(mbedtls 2.16.0 REQUIRED)
+
+    message("MBEDTLS_INCLUDE_DIR=${MBEDTLS_INCLUDE_DIR}")
+    message("MBEDTLS_TLS_LIBRARY=${MBEDTLS_TLS_LIBRARY}")
+    message("MBEDTLS_SSL_LIBRARY=${MBEDTLS_SSL_LIBRARY}")
+    message("MBEDTLS_X509_LIBRARY=${MBEDTLS_X509_LIBRARY}")
+    message("MBEDTLS_CRYPTO_LIBRARY=${MBEDTLS_CRYPTO_LIBRARY}")
+    message("MBEDTLS_LIBRARIES=${MBEDTLS_LIBRARIES}")
+    message("MBEDTLS_VERSION=${MBEDTLS_VERSION}")
 
 
-message("\n############################################################################\n")
+    message("\n############################################################################\n")
 
-###################################################################################################
+    ###################################################################################################
+endif()
+
 ## define targets
 
 include(cmake/module-utils.cmake)
