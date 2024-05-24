@@ -23,7 +23,7 @@ option(OATPP_DIR_LIB "Path to directory with liboatpp (directory containing ex: 
 option(OATPP_BUILD_TESTS "Build tests for this module" ON)
 option(OATPP_LINK_TEST_LIBRARY "Link oat++ test library" ON)
 option(OATPP_INSTALL "Install module binaries" ON)
-option(USE_FETCH_CONTENT "Use FetchContent for dependencies" ON)
+option(USE_FETCH_CONTENT "Use FetchContent for mbedtls dependency" OFF)
 if(USE_FETCH_CONTENT)
     set(MBEDTLS_TARGET mbedtls CACHE STRING "The mbedtls target from FetchContent")
     set(MBEDX509_TARGET mbedx509 CACHE STRING "The mbedx509 (ssl) target from FetchContent")
